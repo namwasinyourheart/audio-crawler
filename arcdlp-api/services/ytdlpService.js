@@ -300,10 +300,21 @@ function looksLikePlaylist(url) {
     const u = url.toLowerCase();
     if (u.includes('list=')) return true;
     if (u.includes('/playlist')) return true;
-    if (u.includes('/channel/') || u.includes('/c/') || u.includes('/@')) return true;
     if (u.includes('/sets/')) return true;
     if (u.includes('/album/') || u.includes('/albums/')) return true;
     if (u.includes('instagram.com') && u.includes('/saved/')) return true;
+
+    try {
+        const parsed = new URL(url);
+        const hostname = parsed.hostname.toLowerCase();
+        const pathname = parsed.pathname.toLowerCase();
+
+        if (hostname.includes('youtube.com')) {
+            if (pathname.includes('/channel/') || pathname.includes('/c/')) return true;
+            if (pathname.startsWith('/@') && !pathname.includes('/video/')) return true;
+        }
+    } catch {}
+
     return false;
 }
 
